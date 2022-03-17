@@ -22,8 +22,8 @@ const (
 )
 
 type ConstantPoolEntry struct {
-	Tag  uint8
-	Info []uint8
+	Tag   uint8
+	Value interface{}
 }
 
 type ClassFile struct {
@@ -73,23 +73,18 @@ type StringInfo struct {
 	StringIndex uint16
 }
 
-type IntegerInfo struct {
-	Tag   uint8
-	Bytes uint32
-}
-
 type FloatInfo struct {
 	Tag   uint8
 	Bytes uint32
 }
 
-type LongInfo struct {
+type DoubleInfo struct {
 	Tag       uint8
 	HighBytes uint32
 	LowBytes  uint32
 }
 
-type DoubleInfo struct {
+type LongInfo struct {
 	Tag       uint8
 	HighBytes uint32
 	LowBytes  uint32
@@ -101,7 +96,7 @@ type NameAndTypeInfo struct {
 	DescriptorIndex uint16
 }
 
-type UtfInfo struct {
+type Utf8Info struct {
 	Tag    uint8
 	Length uint16
 	Bytes  []uint8
