@@ -154,7 +154,7 @@ func (c *ConstantPool) GetStringEntry(index uint16) (string, error) {
 	if value.Tag == StringConstant {
 		return value.Value.(string), nil
 	} else {
-		return "", nil
+		return "", errors.New("no string constant value found")
 	}
 }
 

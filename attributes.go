@@ -1,5 +1,12 @@
 package gojav
 
+const (
+	CodeAttr          = "Code"
+	InnerClassesAttr  = "InnerClasses"
+	ConstantValueAttr = "ConstantValue"
+	SignatureAttr     = "Signature"
+)
+
 func (r Reader) ReadAttributes(pool *ConstantPool) (*Attributes, error) {
 	count, err := r.ReadU2()
 	if err != nil {
@@ -25,10 +32,14 @@ func (r Reader) ReadAttributes(pool *ConstantPool) (*Attributes, error) {
 		name, err = pool.GetStringEntry(nameIndex)
 		var value any = nil
 		switch name {
-		case "Code":
+		case CodeAttr:
 			value, err = r.ReadCodeAttribute(pool)
-		case "InnerClasses":
+		case InnerClassesAttr:
 			value, err = r.ReadInnerClassesAttribute(pool)
+		case ConstantValueAttr:
+			value, err = r.ReadConstantValueAttribute()
+		case SignatureAttr:
+			value, err = r.ReadSignatureAttribute(pool)
 		default:
 			r.Discard(int64(length))
 		}
@@ -136,6 +147,35 @@ func (r Reader) ReadInnerClassesAttribute(pool *ConstantPool) (*InnerClassesAttr
 		}
 		out.Entries[i] = entry
 	}
-
 	return &out, nil
+}
+
+type ConstantValueAttribute struct {
+	Index uint16
+}
+
+func (r Reader) ReadConstantValueAttribute() (*ConstantValueAttribute, error) {
+	value, err := r.ReadU2()
+	if err != nil {
+		return nil, err
+	}
+	return &ConstantValueAttribute{Index: value}, nil
+}
+
+type SignatureAttribute struct {
+	Signature string
+}
+
+func (r Reader) ReadSignatureAttribute(pool *ConstantPool) (*SignatureAttribute, error) {
+	index, err := r.ReadU2()
+	if err != nil {
+		return nil, err
+	}
+	signature, err := pool.GetStringEntry(index)
+	if err != nil {
+		return nil, err
+	}
+	return &SignatureAttribute{
+		Signature: signature,
+	}, nil
 }
