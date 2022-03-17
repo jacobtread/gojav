@@ -1,7 +1,7 @@
 package types
 
 type (
-	ConstantType uint16
+	ConstantType uint8
 )
 
 const (
@@ -21,21 +21,28 @@ const (
 	InvokeDynamicConstant                   = 18
 )
 
-type ConstantPool struct {
-	Tag  uint16
-	Info []ConstantType
+type ConstantPoolEntry struct {
+	Tag  uint8
+	Info []uint8
 }
 
 type ClassFile struct {
-	Magic            uint32
-	MinorVersion     uint16
-	MajorVersion     uint16
-	ConstantPoolSize uint16
-	ConstantPool     ConstantPool
-	AccessFlags      uint16
-	ThisClass        uint16
-	SuperClass       uint16
-	InterfacesCount  uint16
+	Magic             uint32
+	MinorVersion      uint16
+	MajorVersion      uint16
+	ConstantPoolCount uint16
+	ConstantPool      []*interface{}
+	AccessFlags       uint16
+	ThisClass         uint16
+	SuperClass        uint16
+	InterfacesCount   uint16
+	Interfaces        []uint16
+	FieldCount        uint16
+	Fields            []FieldInfo
+	MethodCount       uint16
+	Methods           []MethodInfo
+	AttributeCount    uint16
+	Attributes        []AttributeInfo
 }
 
 type ClassInfo struct {
@@ -134,7 +141,9 @@ type FieldInfo struct {
 	AccessFlags     uint16 // See AccessFlag
 	NameIndex       uint16
 	DescriptorIndex uint16
-	AttributesCount uint16
+
+	AttributeCount uint16
+	Attributes     []AttributeInfo
 }
 
 type Attribute uint8
@@ -164,6 +173,7 @@ type MethodInfo struct {
 	AccessFlags     uint16
 	NameIndex       uint16
 	DescriptorIndex uint16
-	AttributesCount uint16
-	Info            []AttributeInfo
+
+	AttributeCount uint16
+	Attributes     []AttributeInfo
 }
