@@ -18,21 +18,26 @@ const (
 )
 
 type ClassFile struct {
-	Magic           uint32
-	MinorVersion    uint16
-	MajorVersion    uint16
-	ConstantPool    ConstantPool
-	AccessFlags     uint16
-	ThisClass       uint16
-	SuperClass      uint16
-	InterfacesCount uint16
-	Interfaces      []uint16
-	FieldCount      uint16
-	Fields          []FieldInfo
-	MethodCount     uint16
-	Methods         []MethodInfo
-	AttributeCount  uint16
-	Attributes      []AttributeInfo
+	Magic          uint32
+	MinorVersion   uint16
+	MajorVersion   uint16
+	ConstantPool   *ConstantPool
+	AccessFlags    uint16
+	ThisClass      uint16
+	SuperClass     uint16
+	Interfaces     *Interfaces
+	FieldCount     uint16
+	Fields         []FieldInfo
+	MethodCount    uint16
+	Methods        []MethodInfo
+	AttributeCount uint16
+	Attributes     []AttributeInfo
+}
+
+type Interfaces struct {
+	Size    uint16
+	Indexes []uint16
+	Names   []string
 }
 
 type ConstantPool struct {

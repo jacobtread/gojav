@@ -20,11 +20,32 @@ func ParseClassFile(r Reader) (*ClassFile, error) {
 	if err != nil {
 		return nil, err
 	}
+	var pool *ConstantPool
+	pool, err = r.ReadConstantPool()
+	if err != nil {
+		return nil, err
+	}
+	out.ConstantPool = pool
+	err = r.ReadU2To(&out.AccessFlags)
+	if err != nil {
+		return nil, err
+	}
+	err = r.ReadU2To(&out.ThisClass)
+	if err != nil {
+		return nil, err
+	}
+	err = r.ReadU2To(&out.SuperClass)
+	if err != nil {
+		return nil, err
+	}
+	var interfaces *Interfaces
+	interfaces, err = r.ReadInterfaces(pool)
+	out.Interfaces = interfaces
 
 	return &out, nil
 }
 
-func ReadConstantPool(r Reader) (*ConstantPool, error) {
+func (r Reader) ReadConstantPool() (*ConstantPool, error) {
 	count, err := r.ReadU2()
 	if err != nil {
 		return nil, err
@@ -205,4 +226,29 @@ func (l *LinkConstant) Resolve(pool *ConstantPool) (*RLinkConstant, error) {
 		out.Descriptor = value.Descriptor
 	}
 	return out, nil
+}
+
+func (r Reader) ReadInterfaces(pool *ConstantPool) (*Interfaces, error) {
+	count, err := r.ReadU2()
+	if err != nil {
+		return nil, err
+	}
+	out := Interfaces{
+		Size:    count,
+		Indexes: make([]uint16, count),
+		Names:   make([]string, count),
+	}
+	var index uint16
+	for i := uint16(0); i < count; i++ {
+		index, err = r.ReadU2()
+		if err != nil {
+			return nil, err
+		}
+		out.Indexes[i] = index
+		out.Names[i], err = pool.GetStringEntry(index)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return &out, nil
 }
