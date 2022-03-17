@@ -1,76 +1,70 @@
-package types
-
-type (
-	ConstantType uint8
-)
+package gojav
 
 const (
-	ClassConstant              ConstantType = 7
-	FieldrefConstant                        = 9
-	MethodrefConstant                       = 10
-	InterfaceMethodrefConstant              = 11
-	StringConstant                          = 8
-	IntegerConstant                         = 3
-	FloatConstant                           = 4
-	LongConstant                            = 5
-	DoubleConstant                          = 6
-	NameAndTypeConstant                     = 12
-	Utf8Constant                            = 1
-	MethodHandleConstant                    = 15
-	MethodTypeConstant                      = 16
-	InvokeDynamicConstant                   = 18
+	ClassConstant              uint8 = 7
+	FieldrefConstant                 = 9
+	MethodrefConstant                = 10
+	InterfaceMethodrefConstant       = 11
+	StringConstant                   = 8
+	IntegerConstant                  = 3
+	FloatConstant                    = 4
+	LongConstant                     = 5
+	DoubleConstant                   = 6
+	NameAndTypeConstant              = 12
+	Utf8Constant                     = 1
+	MethodHandleConstant             = 15
+	MethodTypeConstant               = 16
+	InvokeDynamicConstant            = 18
 )
+
+type ClassFile struct {
+	Magic           uint32
+	MinorVersion    uint16
+	MajorVersion    uint16
+	ConstantPool    ConstantPool
+	AccessFlags     uint16
+	ThisClass       uint16
+	SuperClass      uint16
+	InterfacesCount uint16
+	Interfaces      []uint16
+	FieldCount      uint16
+	Fields          []FieldInfo
+	MethodCount     uint16
+	Methods         []MethodInfo
+	AttributeCount  uint16
+	Attributes      []AttributeInfo
+}
+
+type ConstantPool struct {
+	Size uint16
+	Pool []*ConstantPoolEntry
+}
 
 type ConstantPoolEntry struct {
 	Tag   uint8
 	Value interface{}
 }
 
-type ClassFile struct {
-	Magic             uint32
-	MinorVersion      uint16
-	MajorVersion      uint16
-	ConstantPoolCount uint16
-	ConstantPool      []*interface{}
-	AccessFlags       uint16
-	ThisClass         uint16
-	SuperClass        uint16
-	InterfacesCount   uint16
-	Interfaces        []uint16
-	FieldCount        uint16
-	Fields            []FieldInfo
-	MethodCount       uint16
-	Methods           []MethodInfo
-	AttributeCount    uint16
-	Attributes        []AttributeInfo
+type IndexConstant struct {
+	Tag   uint8
+	Index uint16
 }
 
-type ClassInfo struct {
-	Tag       uint8
-	NameIndex uint16
+type RIndexConstant struct {
+	Tag   uint8
+	Value string
 }
 
-type FieldrefInfo struct {
+type LinkConstant struct {
 	Tag              uint8
-	ClassIndex       uint16
+	Index            uint16
 	NameAndTypeIndex uint16
 }
 
-type MethodrefInfo struct {
-	Tag              uint8
-	ClassIndex       uint16
-	NameAndTypeIndex uint16
-}
-
-type InterfaceMethodrefInfo struct {
-	Tag              uint8
-	ClassIndex       uint16
-	NameAndTypeIndex uint16
-}
-
-type StringInfo struct {
-	Tag         uint8
-	StringIndex uint16
+type RLinkConstant struct {
+	ClassName   string
+	ElementName string
+	Descriptor  string
 }
 
 type FloatInfo struct {
@@ -90,12 +84,6 @@ type LongInfo struct {
 	LowBytes  uint32
 }
 
-type NameAndTypeInfo struct {
-	Tag             uint8
-	NameIndex       uint16
-	DescriptorIndex uint16
-}
-
 type Utf8Info struct {
 	Tag    uint8
 	Length uint16
@@ -108,16 +96,6 @@ type MethodHandleInfo struct {
 	ReferenceIndex uint16
 }
 
-type MethodTypeInfo struct {
-	Tag             uint8
-	DescriptorIndex uint16
-}
-
-type InvokeDynamicInfo struct {
-	Tag                      uint8
-	BootstrapMethodAttrIndex uint16
-	NameAndTypeIndex         uint16
-}
 type AccessFlag uint16
 
 const (
