@@ -252,3 +252,21 @@ func (r Reader) ReadInterfaces(pool *ConstantPool) (*Interfaces, error) {
 	}
 	return &out, nil
 }
+
+func (r Reader) ReadField(pool *ConstantPool) (*FieldInfo, error) {
+	out := &FieldInfo{}
+	err := r.ReadU2To(&out.AccessFlags)
+	if err != nil {
+		return nil, err
+	}
+	err = r.ReadU2To(&out.NameIndex)
+	if err != nil {
+		return nil, err
+	}
+	err = r.ReadU2To(&out.DescriptorIndex)
+	if err != nil {
+		return nil, err
+	}
+	// TODO: Read attributes
+	return out, nil
+}

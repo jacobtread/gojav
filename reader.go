@@ -123,3 +123,8 @@ func (r *Reader) ReadUTF8() (string, error) {
 	}
 	return string(bytes), nil
 }
+
+func (r *Reader) Discard(length int64) {
+	// Skip over the unused bytes
+	_, _ = io.CopyN(io.Discard, r, length)
+}

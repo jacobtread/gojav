@@ -18,16 +18,17 @@ const (
 )
 
 type ClassFile struct {
-	Magic          uint32
-	MinorVersion   uint16
-	MajorVersion   uint16
-	ConstantPool   *ConstantPool
-	AccessFlags    uint16
-	ThisClass      uint16
-	SuperClass     uint16
-	Interfaces     *Interfaces
+	Magic        uint32
+	MinorVersion uint16
+	MajorVersion uint16
+	ConstantPool *ConstantPool
+	AccessFlags  uint16
+	ThisClass    uint16
+	SuperClass   uint16
+	Interfaces   *Interfaces
+
 	FieldCount     uint16
-	Fields         []FieldInfo
+	Fields         []*FieldInfo
 	MethodCount    uint16
 	Methods        []MethodInfo
 	AttributeCount uint16
@@ -122,6 +123,11 @@ type FieldInfo struct {
 
 	AttributeCount uint16
 	Attributes     []AttributeInfo
+}
+
+type Attributes struct {
+	Size       uint16
+	Attributes []any
 }
 
 type Attribute uint8
